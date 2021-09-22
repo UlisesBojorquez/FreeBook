@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* {
+  font-family: 'Century Gothic', sans-serif !important;
+} 
+
+@font-face {
+  font-family: "Century Gothic";
+  src: local("Century Gothic") ,url("./Fonts/Century Gothic.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Century Gothic";
+  src: local("Century Gothic Bold") ,url("./Fonts/Century Gothic Bold.ttf") format("truetype");
+  font-weight: bold;
+}

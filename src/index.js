@@ -3,10 +3,24 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './Fonts/Century Gothic.ttf'
+import './Fonts/Century Gothic Bold.ttf'
+import { SnackbarProvider } from 'notistack';
+import Grow from '@material-ui/core/Grow';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SnackbarProvider 
+        maxSnack={1}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        TransitionComponent={Grow}
+        autoHideDuration={3000}
+        > 
+      <App />
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
