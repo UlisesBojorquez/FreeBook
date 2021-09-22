@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         width:300
     },
     title:{
-        marginBottom: 120
+        marginBottom: 80
     },
     button:{
         backgroundColor:'black',
@@ -108,9 +108,12 @@ export default function Login() {
         if(validateInputs()){
             enqueueSnackbar("Sucess", {variant: 'success'});
             history.push({
+                pathname:'/Main'
+            })
+            /*history.push({
                 pathname:'/Home',
                 state: { params: false },
-            });
+            });*/
         }else{
             enqueueSnackbar("Error", {variant: 'error'});
         }
@@ -119,6 +122,12 @@ export default function Login() {
     const moveRegiser = () =>{
         history.push({
             pathname:'/Register'
+        })
+    }
+
+    const moveMenu = () =>{
+        history.push({
+            pathname:'/'
         })
     }
 
@@ -133,6 +142,9 @@ export default function Login() {
                     <Grid container direction="column" justifyContent="center" alignItems="center">
                         <Grid item className={classes.title}>
                             <h1>FreeBook</h1>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <h5><Link component="button" variant="body2" underline="hover" onClick={moveMenu} style={{color:'black'}}>Regresar al Menu</Link></h5>  
                         </Grid>
                         <Grid item xs={6}>
                             <TextField 

@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         width:300
     },
     title:{
-        marginBottom: 50
+        marginBottom: 20
     },
     button:{
         backgroundColor:'black',
@@ -148,6 +148,12 @@ export default function Register() {
 
     const moveLogin = () =>{
         history.push({
+            pathname:'/Login'
+        })
+    }
+
+    const moveMenu = () =>{
+        history.push({
             pathname:'/'
         })
     }
@@ -159,6 +165,9 @@ export default function Register() {
                     <Grid container direction="column" justifyContent="center" alignItems="center">
                         <Grid item className={classes.title}>
                             <h1>Registro</h1>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <h5><Link component="button" variant="body2" underline="hover" onClick={moveMenu} style={{color:'black'}}>Regresar al Menu</Link></h5>  
                         </Grid>
                         <Grid item xs={6}>
                             <TextField 

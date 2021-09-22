@@ -79,42 +79,42 @@ export default function Category(props) {
                 </Grid>
             </Grid>
             <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={2} className={classes.containerCategories}>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'technology')} id="technology" >
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'technology')} id="technology" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperTechnology} >
                         <Grid>
                             <h2 className={classes.textCategory}> Tecnología </h2>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'matemathics')} id="matemathics">
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'matemathics')} id="matemathics" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperMatemathics} >
                         <Grid>
                             <h2 className={classes.textCategory}> Matemáticas </h2>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'geography')} id="geography">
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'geography')} id="geography" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperGeography} >
                         <Grid>
                             <h2 className={classes.textCategory}> Geografía </h2>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'history')} id="history">
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'history')} id="history" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperHistory} >
                         <Grid>
                             <h2 className={classes.textCategory}> Historia </h2>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'science')} id="science">
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'science')} id="science" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperScience} >
                         <Grid>
                             <h2 className={classes.textCategory}> Ciencia </h2>
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} onClick={(e) => categoryManger(e, 'english')} id="english">
+                <Grid item xs={4} onClick={(e) => categoryManger(e, 'english')} id="english" style={{cursor:'pointer'}}>
                     <Paper elevation={3} className={classes.paperEnglish} >
                         <Grid>
                             <h2 className={classes.textCategory}> Inglés </h2>
