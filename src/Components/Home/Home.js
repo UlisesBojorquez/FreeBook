@@ -6,8 +6,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
-import Category from './Category.js'
-import ItemBoxBook from './ItemBoxBook.js'
+import Category from './Category.js';
+import ItemBoxBook from './ItemBoxBook.js';
+import UploadBook from './UploadBook.js';
 import PropTypes from 'prop-types';
 
 
@@ -51,7 +52,8 @@ const useStyles = makeStyles((theme) => ({
         color:'red'
     },
     containerTopBar:{
-        padding: 20
+        padding: 20,
+        backgroundColor:'#EAECEE'
     },
     textName:{
         textAlign: 'left',
@@ -204,33 +206,33 @@ export default function Home(props) {
                         /> 
                 </Grid>
                 <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveLogin}>Login</Button> 
+                   <Button className={classes.button} onClick={moveLogin}>Iniciar Sesión</Button> 
                 </Grid>
                 <Grid item xs={2}>
                    <Button className={classes.button} onClick={moveRegister}>Registro</Button> 
                 </Grid>
             </Grid>
-
-            <Tabs value={value} onChange={handleChange}>
-                <Tab label="Home" {...a11yProps(0)} />
-                <Tab label="Books" {...a11yProps(1)} />
-                <Tab label="Upload" {...a11yProps(2)} />
-            </Tabs>
-            <TabPanel value={value} index={0}>
-                <Category category={selectCategory}/>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                {
-                    resultSearch ?
-                    <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
-                    :
-                    <p>No se encuentran resultados</p>
-                }
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Item Three
-            </TabPanel>
-            
+            <Grid style={{marginTop:8}}>
+                <Tabs value={value} onChange={handleChange}>
+                    <Tab label="Home" {...a11yProps(0)} />
+                    <Tab label="Libros" {...a11yProps(1)} />
+                    <Tab label="Subir" {...a11yProps(2)} />
+                </Tabs>
+                <TabPanel value={value} index={0}>
+                    <Category category={selectCategory}/>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    {
+                        resultSearch ?
+                        <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
+                        :
+                        <p>No se encuentran resultados</p>
+                    }
+                </TabPanel>
+                <TabPanel value={value} index={2}>
+                    <UploadBook/>
+                </TabPanel>
+            </Grid>
 
         </Grid> 
     );

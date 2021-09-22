@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize:'2.5vmin'
     }
 }));
-export default function Home(props) {
+export default function ItemBoxBook(props) {
     const classes = useStyles()
 
     const [title] = useState(props.title)
