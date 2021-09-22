@@ -109,7 +109,7 @@ export default function Home(props) {
 
     const [resultSearch,setResultSearch] = useState(false);
 
-    const location = useLocation();
+    /*const location = useLocation();
     useEffect(() => {
         if(location.state == null){
             console.log('No hay usuario loggeado')
@@ -118,7 +118,7 @@ export default function Home(props) {
             console.log(myparam);
         }
         
-    }, [location]);
+    }, [location]);*/
 
     const changeManager = (event) => {
         const currentValue=event.target.value;
