@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from "react";
-import Grid from "@material-ui/core/Grid";
-import { TextField, Button, makeStyles, Box, Tab, Tabs, Typography, Paper } from "@material-ui/core";
+import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography, Paper } from "@material-ui/core";
 import { useSnackbar } from 'notistack';
 import { useHistory, useLocation } from 'react-router-dom';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
-import IconButton from '@mui/material/IconButton';
 import PropTypes from 'prop-types';
 import Book from './Book.js'
+import BookAD from './BookAD.js'
+import Axios from 'axios'
+
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -110,47 +109,23 @@ export default function Main(props) {
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
 
-    const [search,setSearch] = useState('');
-    const [searchHelper,setSearchHelper] = useState('');
-    const [flagSearch,setFlagSearch] = useState(true);
-
     const [value, setValue] = useState(0);
 
-    const [resultSearch,setResultSearch] = useState(false);
+    const [status0, setStatus0] = useState([])
+    const [status1, setStatus1] = useState([])
+    const [status2, setStatus2] = useState([])
+    
+    const API_ENDPOINT_GET_BOOKS0 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=0'
+    const API_ENDPOINT_GET_BOOKS1 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
+    const API_ENDPOINT_GET_BOOKS2 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=2'
 
-    /*const location = useLocation();
+
     useEffect(() => {
-        if(location.state == null){
-            console.log('No hay usuario loggeado')
-        }else{
-            const myparam = location.state.params;
-            console.log(myparam);
-        }
+        getBooks(0)
+        getBooks(1)
+        getBooks(2)
         
-    }, [location]);*/
-
-    const changeManager = (event) => {
-        const currentValue=event.target.value;
-        if(event.target.id==='search'){
-            const re=/^[a-zA-z0-9@_.]{0,20}$/;
-            if (currentValue === '' || re.test(currentValue.trimStart()) ) {
-                setSearch(currentValue.trimStart());
-                setFlagSearch(true);
-            }
-        }
-    }
-
-    function validateInputs(){
-        var flag=true;
-        if(search===''){
-            setFlagSearch(false);
-            setSearchHelper('Ingrese un search');
-            flag=false;
-        }else{
-            
-            setFlagSearch(true);
-        }
-    }
+    }, []);
 
 
     const moveSalir = () =>{
@@ -159,54 +134,63 @@ export default function Main(props) {
         })
     }
 
-    const searchManager = () => {
-        if(search === ''){
-            setResultSearch(false);
-        }else{
-            setResultSearch(true);
-        }
-    }
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    const [categorySelected, setCategorySelected] = useState('')
-
-    function selectCategory(category){
-        setValue(1);
-        console.log("esta es la cateogria seleccionada "+category)
+    const getBooks = async (value) =>{
+        switch (value) {
+            case 0:
+                const result = await Axios({
+                    method: 'GET',
+                    url: API_ENDPOINT_GET_BOOKS0
+                })
+                //console.log('Result: ', result.data)
+                setStatus0(result.data)
+            case 1:
+                const result2 = await Axios({
+                    method: 'GET',
+                    url: API_ENDPOINT_GET_BOOKS1
+                })
+                //console.log('Result: ', result2.data)
+                setStatus1(result2.data)
+            case 2:
+                const result3 = await Axios({
+                    method: 'GET',
+                    url: API_ENDPOINT_GET_BOOKS2
+                })
+                //console.log('Result: ', result3.data)
+                setStatus2(result3.data)
+        }
     }
+
+    function selectSearchMode0() {
+        
+        return status0.map((book) =>(
+            <Book title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>         
+        ))   
+    }
+    function selectSearchMode1() {
+        
+        return status1.map((book) =>(
+            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                 
+        ))   
+    }
+    function selectSearchMode2() {
+        
+        return status2.map((book) =>(
+            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                  
+        ))
+    }
+
+    
+
 
     return (
         <Grid>
             <Grid container direction='row' justifyContent='flex-end' alignItems="center" spacing={2} className={classes.containerTopBar}>
-                <Grid item xs={4}>
+                <Grid item xs={8}>
                     <h1 className={classes.textName}>FreeBook</h1> 
-                </Grid>
-                <Grid item xs={4}>
-                    <TextField 
-                        id='search' 
-                        margin='normal'
-                        autoComplete='off' 
-                        placeholder='Buscar un libro' 
-                        style={{width:'100%', margin:0, padding:0}}
-                        InputProps={{
-                            disableUnderline: true,
-                            classes:{
-                                root: flagSearch ? classes.textfield : classes.textfieldError,
-                            },
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    <IconButton onClick={searchManager}>
-                                        <SearchIcon />
-                                    </IconButton> 
-                                </InputAdornment>
-                            ),
-                        }}
-                        value={search}
-                        onChange={changeManager}
-                        /> 
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
@@ -222,17 +206,18 @@ export default function Main(props) {
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-
-                        <Book/>  
-                        
-                        
+                        {selectSearchMode0()} 
                     </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    
+                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
+                        {selectSearchMode1()}
+                    </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-
+                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
+                        {selectSearchMode2()}
+                    </Grid>
                 </TabPanel>
             </Grid>
 

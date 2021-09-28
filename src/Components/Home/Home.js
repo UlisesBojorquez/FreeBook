@@ -112,6 +112,7 @@ export default function Home(props) {
     const [resultSearch,setResultSearch] = useState(false);
 
     const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
+    const API_ENDPOINT_GET_BOOKS_PER_CATEGORY = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?category='
 
 
     /*const location = useLocation();
@@ -133,18 +134,6 @@ export default function Home(props) {
                 setSearch(currentValue.trimStart());
                 setFlagSearch(true);
             }
-        }
-    }
-
-    function validateInputs(){
-        var flag=true;
-        if(search===''){
-            setFlagSearch(false);
-            setSearchHelper('Ingrese un search');
-            flag=false;
-        }else{
-            
-            setFlagSearch(true);
         }
     }
 
@@ -182,10 +171,15 @@ export default function Home(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    const [categorySelected, setCategorySelected] = useState('')
-
+    
     function selectCategory(category){
+
+        /*const result = await Axios({
+            method: 'GET',
+            url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY
+        })
+        console.log('Result: ', result.data)
+        setSearchResponse(result.data)*/
         setValue(1);
         setSearchMode(1)
         console.log("esta es la cateogria seleccionada "+category)

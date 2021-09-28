@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { TextField, makeStyles, Paper, Grid, Button } from "@material-ui/core";
-import PortadaLibro from '../../Images/PortadaLibro.jpg'
+import { TextField, makeStyles, Grid, Button } from "@material-ui/core";
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useSnackbar } from 'notistack';
-import ImageUploader from 'react-images-upload'
 import Axios from 'axios'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
@@ -128,13 +126,13 @@ export default function UploadBook() {
     const handleSubmit = async(files) =>{
 
         const f = files[0]
-        console.log(f['file'])
+        //console.log(f['file'])
         //GET request: presigned URL
         const response = await Axios({
             method: 'GET',
             url: API_ENDPOINT
         })
-        console.log('Response: ', response)
+        //console.log('Response: ', response)
         //PUT request: upload file to S3
         const result = await fetch(response.data.uploadURL, {
             method: 'PUT',
@@ -143,10 +141,10 @@ export default function UploadBook() {
             },
             body: f['file']
           })
-          console.log('Result: ', result)
+          //console.log('Result: ', result)
 
         const urlFinal = result.url.split('?')[0]
-        console.log(urlFinal)
+        //console.log(urlFinal)
         setUrlPortada(urlFinal)
         
 
@@ -180,26 +178,6 @@ export default function UploadBook() {
 
     }
 
-    // const handleInsertBook = async() =>{
-
-        
-
-    //     const bodyStr={
-    //         "isbn": 21312313,
-    //         "title": "Prueba libro",
-    //         "year": 2021,
-    //         "editorial": "Patito",
-    //         "url": "https://freebook-files.s3.amazonaws.com/118432.pdf",
-    //         "coverurl": "https://freebook-files.s3.amazonaws.com/1913492.png"
-    //     }
-    //     const result = await Axios({
-    //         method: 'GET',
-    //         url: API_ENDPOINT_INSERT_BOOK
-    //     })
-    //     console.log('Result: ', result)
-
-    // }
-
     const handleInsertBook = async() =>{
 
         if(validateInputs()){
@@ -217,7 +195,8 @@ export default function UploadBook() {
             }
 
             Axios.post(API_ENDPOINT_INSERT_BOOK, bodyStr).then(response => console.log(response))
-            
+            enqueueSnackbar("Se envio el libro correctamente, entra en modo de espera para ser aceptado.", {variant: 'success'});
+
 
         }else{
             enqueueSnackbar("Faltan datos por capturar", {variant: 'error'});
