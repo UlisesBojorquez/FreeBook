@@ -10,6 +10,8 @@ import Category from './Category.js';
 import ItemBoxBook from './ItemBoxBook.js';
 import UploadBook from './UploadBook.js';
 import PropTypes from 'prop-types';
+import Axios from 'axios'
+import ItemBoxBook0 from "./ItemBoxBook0.js";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -109,6 +111,9 @@ export default function Home(props) {
 
     const [resultSearch,setResultSearch] = useState(false);
 
+    const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
+
+
     /*const location = useLocation();
     useEffect(() => {
         if(location.state == null){
@@ -123,7 +128,7 @@ export default function Home(props) {
     const changeManager = (event) => {
         const currentValue=event.target.value;
         if(event.target.id==='search'){
-            const re=/^[a-zA-z0-9@_.]{0,20}$/;
+            const re=/^[a-zA-z0-9@_.]{0,50}$/;
             if (currentValue === '' || re.test(currentValue.trimStart()) ) {
                 setSearch(currentValue.trimStart());
                 setFlagSearch(true);
@@ -155,12 +160,22 @@ export default function Home(props) {
         })
     }
 
-    const searchManager = () => {
+    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category
+    const [searchResponse, setSearchResponse] = useState([])
+    const searchManager = async () => {
         if(search === ''){
             setResultSearch(false);
+            const result = await Axios({
+                method: 'GET',
+                url: API_ENDPOINT_GET_BOOKS
+            })
+            console.log('Result: ', result.data)
+            setSearchResponse(result.data)
+            setSearchMode(0)
         }else{
-            setResultSearch(true);
+            setSearchMode(3)
         }
+        
         setValue(1);
     }
 
@@ -172,7 +187,21 @@ export default function Home(props) {
 
     function selectCategory(category){
         setValue(1);
+        setSearchMode(1)
         console.log("esta es la cateogria seleccionada "+category)
+    }
+
+    function selectSearchMode(){
+        switch (searchMode) {
+            case 0:
+                return searchResponse.map((book) =>(
+                    <ItemBoxBook0 title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                ))
+            case 1:
+                return <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
+            case 3:
+                return <p>No se encuentran resultados</p>
+        }
     }
 
     return (
@@ -223,10 +252,7 @@ export default function Home(props) {
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     {
-                        resultSearch ?
-                        <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
-                        :
-                        <p>No se encuentran resultados</p>
+                        selectSearchMode()
                     }
                 </TabPanel>
                 <TabPanel value={value} index={2}>
