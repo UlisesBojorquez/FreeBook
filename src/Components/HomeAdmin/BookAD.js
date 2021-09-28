@@ -1,26 +1,8 @@
 import React, {useState, useEffect} from "react";
-import { Grid, Button, makeStyles, Paper, Link } from "@material-ui/core";
-import Axios from 'axios'
+import { Grid, makeStyles, Paper, Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-    buttonAccept:{
-        backgroundColor:'#5D6D7E',
-        width:'100%',
-        height:'50%',
-        color:'#FFFFFF',
-        borderRadius:4,
-        textAlign:'center',
-        margin: '2px 0px 2px 0px'
-    },
-    buttonDecline:{
-        backgroundColor:'#AEB6BF',
-        width:'100%',
-        height:'50%',
-        color:'#FFFFFF',
-        borderRadius:4,
-        textAlign:'center',
-        margin: '2px 0px 2px 0px'
-    },
+    
     title:{
         margin:0,
         textAlign:'left'
@@ -35,9 +17,8 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function Book(props) {
+export default function BookAD(props) {
     const classes = useStyles();
-    const [showItem, setShowItem] = useState(true)
 
     const [id] = useState(props.id)
     const [title] = useState(props.title)
@@ -47,8 +28,6 @@ export default function Book(props) {
     const [link] = useState(props.link)
     const [categories, setCategories] = useState('')
     const [authors, setAuthors] = useState('')
-
-    const API_ENDPOINT_CHANGE_STATE_BOOK = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
 
     useEffect(() => {
         var textAuthors = ""
@@ -69,36 +48,14 @@ export default function Book(props) {
         
     }, []);
 
-    const acceptBook = async() =>{
-        setShowItem(false);
-        //do further actions
-        const bodyStr={
-            "status": 1
-        }
-        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
-
-    }
-
-    const declineBook = () =>{
-        setShowItem(false);
-        //do further actions
-        const bodyStr={
-            "status": 2
-        }
-        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
-    }
-
     const openDocument = () =>{
         window.open(link)
     }
 
     return (
         <Grid item xs={12}>
-            { showItem ?
             <Grid container direction='row' spacing={2}>
-                <Grid item xs={10} >
+                <Grid item xs={12} >
                     <Paper elevation={3} className={classes.itemPaper}>
                         <Grid container direction='row' justifyContent='flex-start' alignItems='flex-start'>
                             <Grid item xs={12}><p className={classes.title}> <b>Titulo:</b> {title} </p></Grid>
@@ -111,14 +68,7 @@ export default function Book(props) {
                         </Grid>
                     </Paper>
                 </Grid>
-                <Grid item xs={2}>
-                    <Button className={classes.buttonAccept} onClick={acceptBook}>Aceptar</Button> 
-                    <Button className={classes.buttonDecline} onClick={declineBook}>Rechazar</Button> 
-                </Grid>
             </Grid>
-            :
-            <Grid></Grid> 
-            }
-        </Grid>
+        </Grid> 
     );
 }
