@@ -113,6 +113,7 @@ export default function Home(props) {
 
     const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
     const API_ENDPOINT_GET_BOOKS_PER_CATEGORY = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?category='
+    const API_ENDPOINT_GET_BOOKS_SEARCH = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?search='
 
 
     /*const location = useLocation();
@@ -129,7 +130,7 @@ export default function Home(props) {
     const changeManager = (event) => {
         const currentValue=event.target.value;
         if(event.target.id==='search'){
-            const re=/^[a-zA-z0-9@_.]{0,50}$/;
+            const re=/^[a-zA-z0-9@_.\s]{0,50}$/;
             if (currentValue === '' || re.test(currentValue.trimStart()) ) {
                 setSearch(currentValue.trimStart());
                 setFlagSearch(true);
@@ -160,9 +161,18 @@ export default function Home(props) {
             setSearchResponse(result.data)
             setSearchMode(0)
         }else{
-            setSearchMode(3)
+            const result = await Axios({
+                method: 'GET',
+                url: API_ENDPOINT_GET_BOOKS_SEARCH+search
+            })
+            console.log('Result: ', result.data)
+            if(result.data.length===0){
+                setSearchMode(4)
+            }else{
+                setSearchResponse(result.data)
+                setSearchMode(3)
+            } 
         }
-        
         setValue(1);
     }
 
@@ -177,12 +187,18 @@ export default function Home(props) {
         })
         console.log('Result: ', result.data)
         setSearchResponse(result.data)
+        
+        if(result.data.length===0){
+            setSearchMode(4)
+        }else{
+            setSearchResponse(result.data)
+            setSearchMode(1)
+        }
+        setValue(1);
     }
     
     function selectCategory(category){
         categoryManager(category)
-        setSearchMode(1)
-        setValue(1);
         console.log("esta es la cateogria seleccionada "+category)
     }
 
@@ -197,6 +213,10 @@ export default function Home(props) {
                     <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
                 ))
             case 3:
+                return searchResponse.map((book) =>(
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                ))
+            case 4:
                 return <p>No se encuentran resultados</p>
         }
     }
