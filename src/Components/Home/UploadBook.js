@@ -69,12 +69,12 @@ const MenuProps = {
 };
 
 const categories = [
-    'Tecnologia',
-    'Matematicas',
-    'Geografia',
-    'Historia',
-    'Ciencia',
-    'Ingles',
+    'TECNOLOGIA',
+    'MATEMATICAS',
+    'GEOGRAFIA',
+    'HISTORIA',
+    'CIENCIA',
+    'INGLES',
 ];
 
 

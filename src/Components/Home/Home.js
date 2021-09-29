@@ -62,7 +62,10 @@ const useStyles = makeStyles((theme) => ({
         margin:0,
         color:'black',
         fontSize:'6vmin'
-    }
+    },
+    containerCategories:{
+        padding: 20,
+    },
 }));
 
 function TabPanel(props) {
@@ -245,9 +248,11 @@ export default function Home(props) {
                     <Category category={selectCategory}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    {
-                        selectSearchMode()
-                    }
+                    <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={4} className={classes.containerCategories}>
+                        {
+                            selectSearchMode()
+                        }
+                    </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <UploadBook/>

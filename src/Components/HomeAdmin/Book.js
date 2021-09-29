@@ -66,6 +66,8 @@ export default function Book(props) {
             
         }
         setCategories(textCategories)
+
+        
         
     }, []);
 
@@ -76,8 +78,6 @@ export default function Book(props) {
             "status": 1
         }
         Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
-
     }
 
     const declineBook = () =>{
@@ -87,7 +87,7 @@ export default function Book(props) {
             "status": 2
         }
         Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
+
     }
 
     const openDocument = () =>{

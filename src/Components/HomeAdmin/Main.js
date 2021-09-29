@@ -183,7 +183,6 @@ export default function Main(props) {
         ))
     }
 
-    
 
 
     return (
@@ -206,17 +205,23 @@ export default function Main(props) {
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode0()} 
+                        {
+                            selectSearchMode0()
+                        } 
                     </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode1()}
+                        {
+                            selectSearchMode1()
+                        } 
                     </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode2()}
+                        {
+                            selectSearchMode2()
+                        } 
                     </Grid>
                 </TabPanel>
             </Grid>
