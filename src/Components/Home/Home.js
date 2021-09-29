@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { TextField, Button, makeStyles, Box, Tab, Tabs, Typography } from "@material-ui/core";
 import { useSnackbar } from 'notistack';
@@ -7,12 +7,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import Category from './Category.js';
-import ItemBoxBook from './ItemBoxBook.js';
 import UploadBook from './UploadBook.js';
 import PropTypes from 'prop-types';
 import Axios from 'axios'
-import ItemBoxBook0 from "./ItemBoxBook0.js";
-
+import ItemBoxBook from "./ItemBoxBook.js";
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -105,14 +103,13 @@ export default function Home(props) {
     const classes = useStyles();
     const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
-
     const [search,setSearch] = useState('');
     const [searchHelper,setSearchHelper] = useState('');
     const [flagSearch,setFlagSearch] = useState(true);
-
     const [value, setValue] = useState(0);
-
     const [resultSearch,setResultSearch] = useState(false);
+    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category
+    const [searchResponse, setSearchResponse] = useState([])
 
     const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
     const API_ENDPOINT_GET_BOOKS_PER_CATEGORY = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?category='
@@ -152,8 +149,6 @@ export default function Home(props) {
         })
     }
 
-    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category
-    const [searchResponse, setSearchResponse] = useState([])
     const searchManager = async () => {
         if(search === ''){
             setResultSearch(false);
@@ -174,17 +169,20 @@ export default function Home(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    
-    function selectCategory(category){
 
-        /*const result = await Axios({
+    const categoryManager = async (category) =>{
+        const result = await Axios({
             method: 'GET',
-            url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY
+            url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY+category
         })
         console.log('Result: ', result.data)
-        setSearchResponse(result.data)*/
-        setValue(1);
+        setSearchResponse(result.data)
+    }
+    
+    function selectCategory(category){
+        categoryManager(category)
         setSearchMode(1)
+        setValue(1);
         console.log("esta es la cateogria seleccionada "+category)
     }
 
@@ -192,10 +190,12 @@ export default function Home(props) {
         switch (searchMode) {
             case 0:
                 return searchResponse.map((book) =>(
-                    <ItemBoxBook0 title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
                 ))
             case 1:
-                return <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
+                return searchResponse.map((book) =>(
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                ))
             case 3:
                 return <p>No se encuentran resultados</p>
         }
