@@ -38,7 +38,6 @@ export default function ItemBoxBook0(props) {
         for (let index = 0; index < props.authors.length; index++) {
             const element = props.authors[index];
             textAuthors += element+","
-            
         }
         setAuthors(textAuthors)
 
@@ -46,14 +45,11 @@ export default function ItemBoxBook0(props) {
         for (let index = 0; index < props.categories.length; index++) {
             const element = props.categories[index];
             textCategories+= element+","
-            
         }
         setCategories(textCategories)
-        
     }, []);
 
     function bookManager(event, id){
-        console.log(id)
         window.open(link)
     }
 

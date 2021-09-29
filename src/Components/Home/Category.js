@@ -67,7 +67,6 @@ export default function Category(props) {
     const classes = useStyles()
 
     function categoryManger(event, id){
-        console.log(id)
         props.category(id)
     }
 

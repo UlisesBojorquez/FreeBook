@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BookAD(props) {
     const classes = useStyles();
-
     const [id] = useState(props.id)
     const [title] = useState(props.title)
     const [isbn] = useState(props.isbn)
@@ -32,7 +31,6 @@ export default function BookAD(props) {
         for (let index = 0; index < props.authors.length; index++) {
             const element = props.authors[index];
             textAuthors += element+","
-            
         }
         setAuthors(textAuthors)
 
@@ -40,10 +38,8 @@ export default function BookAD(props) {
         for (let index = 0; index < props.categories.length; index++) {
             const element = props.categories[index];
             textCategories+= element+","
-            
         }
         setCategories(textCategories)
-        
     }, []);
 
     const openDocument = () =>{

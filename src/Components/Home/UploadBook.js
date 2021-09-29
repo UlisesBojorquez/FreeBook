@@ -110,14 +110,12 @@ export default function UploadBook() {
     };
 
     const handleChangeStatus = ({ meta, remove }, status) => {
-        console.log(status, meta)
         if(status==='removed'){
             setUrlPortada('')
         }
     }
 
     const handleChangeStatus2 = ({ meta, remove }, status) => {
-        console.log(status, meta)
         if(status==='removed'){
             setUrlLibro('')
         }
@@ -126,13 +124,11 @@ export default function UploadBook() {
     const handleSubmit = async(files) =>{
 
         const f = files[0]
-        //console.log(f['file'])
         //GET request: presigned URL
         const response = await Axios({
             method: 'GET',
             url: API_ENDPOINT
         })
-        //console.log('Response: ', response)
         //PUT request: upload file to S3
         const result = await fetch(response.data.uploadURL, {
             method: 'PUT',
@@ -140,26 +136,19 @@ export default function UploadBook() {
                 "Content-Type":"image/png, image/jpg, image/jpeg"
             },
             body: f['file']
-          })
-          //console.log('Result: ', result)
-
+        })
         const urlFinal = result.url.split('?')[0]
-        //console.log(urlFinal)
         setUrlPortada(urlFinal)
-        
-
     }
 
     const handleSubmit2 = async(files) =>{
 
         const f = files[0]
-        //console.log(f['file'])
         //GET request: presigned URL
         const response = await Axios({
             method: 'GET',
             url: API_ENDPOINT2
         })
-        //console.log('Response: ', response)
         //PUT request: upload file to S3
         const result = await fetch(response.data.uploadURL, {
             method: 'PUT',
@@ -167,15 +156,9 @@ export default function UploadBook() {
                 "Content-Type":"application/pdf"
             },
             body: f['file'],
-            
-          })
-          //console.log('Result: ', result)
-
+        })
         const urlFinal = result.url.split('?')[0]
-        //console.log(urlFinal)
         setUrlLibro(urlFinal)
-        
-
     }
 
     const handleInsertBook = async() =>{
@@ -194,7 +177,7 @@ export default function UploadBook() {
                 "categories": categoryName
             }
 
-            Axios.post(API_ENDPOINT_INSERT_BOOK, bodyStr).then(response => console.log(response))
+            Axios.post(API_ENDPOINT_INSERT_BOOK, bodyStr)
             enqueueSnackbar("Se envio el libro correctamente, entra en modo de espera para ser aceptado.", {variant: 'success'});
 
 

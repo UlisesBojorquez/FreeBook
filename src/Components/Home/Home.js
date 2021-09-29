@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { TextField, Button, makeStyles, Box, Tab, Tabs, Typography } from "@material-ui/core";
-import { useSnackbar } from 'notistack';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
@@ -102,30 +101,14 @@ function a11yProps(index) {
 export default function Home(props) {
     const classes = useStyles();
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
     const [search,setSearch] = useState('');
-    const [searchHelper,setSearchHelper] = useState('');
     const [flagSearch,setFlagSearch] = useState(true);
     const [value, setValue] = useState(0);
-    const [resultSearch,setResultSearch] = useState(false);
-    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category
+    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category, 3 for no results
     const [searchResponse, setSearchResponse] = useState([])
-
     const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
     const API_ENDPOINT_GET_BOOKS_PER_CATEGORY = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?category='
     const API_ENDPOINT_GET_BOOKS_SEARCH = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?search='
-
-
-    /*const location = useLocation();
-    useEffect(() => {
-        if(location.state == null){
-            console.log('No hay usuario loggeado')
-        }else{
-            const myparam = location.state.params;
-            console.log(myparam);
-        }
-        
-    }, [location]);*/
 
     const changeManager = (event) => {
         const currentValue=event.target.value;
@@ -144,20 +127,12 @@ export default function Home(props) {
         })
     }
 
-    const moveRegister = () =>{
-        history.push({
-            pathname:'/Register'
-        })
-    }
-
     const searchManager = async () => {
         if(search === ''){
-            setResultSearch(false);
             const result = await Axios({
                 method: 'GET',
                 url: API_ENDPOINT_GET_BOOKS
             })
-            console.log('Result: ', result.data)
             setSearchResponse(result.data)
             setSearchMode(0)
         }else{
@@ -165,7 +140,6 @@ export default function Home(props) {
                 method: 'GET',
                 url: API_ENDPOINT_GET_BOOKS_SEARCH+search
             })
-            console.log('Result: ', result.data)
             if(result.data.length===0){
                 setSearchMode(4)
             }else{
@@ -185,7 +159,6 @@ export default function Home(props) {
             method: 'GET',
             url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY+category
         })
-        console.log('Result: ', result.data)
         setSearchResponse(result.data)
         
         if(result.data.length===0){
@@ -199,7 +172,6 @@ export default function Home(props) {
     
     function selectCategory(category){
         categoryManager(category)
-        console.log("esta es la cateogria seleccionada "+category)
     }
 
     function selectSearchMode(){
@@ -252,10 +224,9 @@ export default function Home(props) {
                         /> 
                 </Grid>
                 <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveLogin}>Iniciar Sesión</Button> 
                 </Grid>
                 <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveRegister}>Registro</Button> 
+                   <Button className={classes.button} onClick={moveLogin}>Iniciar Sesión</Button> 
                 </Grid>
             </Grid>
             <Grid style={{marginTop:8}}>
@@ -278,7 +249,6 @@ export default function Home(props) {
                     <UploadBook/>
                 </TabPanel>
             </Grid>
-
         </Grid> 
     );
 }

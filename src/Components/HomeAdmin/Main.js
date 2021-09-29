@@ -1,13 +1,10 @@
 import React, {useState, useEffect} from "react";
-import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography, Paper } from "@material-ui/core";
-import { useSnackbar } from 'notistack';
+import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography } from "@material-ui/core";
 import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ReceivedBooks from './ReceivedBooks.js'
 import AcceptedBooks from './AcceptedBooks.js'
 import DeniedBooks from './DeniedBooks.js'
-import Axios from 'axios'
-
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -105,16 +102,19 @@ function a11yProps(index) {
     };
 }
 
-export default function Main(props) {
+export default function Main() {
     const classes = useStyles();
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
-
     const [value, setValue] = useState(0);
-
+    const [isLogged, setIsLogged] = useState(false)
+    const location = useLocation();
     useEffect(() => {
-        
-    }, []);
+        if(location.state == null){
+            window.location.replace('/')
+        }else{
+            setIsLogged(true)
+        }
+    }, [location]);
 
 
     const moveSalir = () =>{
@@ -127,21 +127,22 @@ export default function Main(props) {
         setValue(newValue);
     };
 
-
-
     return (
         <Grid>
-            <Grid container direction='row' justifyContent='flex-end' alignItems="center" spacing={2} className={classes.containerTopBar}>
-                <Grid item xs={8}>
-                    <h1 className={classes.textName}>FreeBook</h1> 
+            { 
+            isLogged ?
+            <Grid>
+                <Grid container direction='row' justifyContent='flex-end' alignItems="center" spacing={2} className={classes.containerTopBar}>
+                    <Grid item xs={8}>
+                        <h1 className={classes.textName}>FreeBook</h1> 
+                    </Grid>
+                    <Grid item xs={2}>
+                    </Grid>
+                    <Grid item xs={2}>
+                    <Button className={classes.button} onClick={moveSalir}>Salir</Button> 
+                    </Grid>
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
-                <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveSalir}>Salir</Button> 
-                </Grid>
-            </Grid>
-            <Grid style={{marginTop:8}}>
+                <Grid style={{marginTop:8}}>
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label="Llegada" {...a11yProps(0)} />
                     <Tab label="Aceptados" {...a11yProps(1)} />
@@ -157,7 +158,10 @@ export default function Main(props) {
                     <DeniedBooks/>
                 </TabPanel>
             </Grid>
-
+            </Grid>
+            :
+            <Grid></Grid>
+            }
         </Grid> 
     );
 }

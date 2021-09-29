@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { Grid } from "@material-ui/core";
-import { useSnackbar } from 'notistack';
 import BookAD from './BookAD.js'
 import Axios from 'axios'
 
 export default function AcceptedBooks() {
-    const { enqueueSnackbar } = useSnackbar();
     const [status1, setStatus1] = useState([])
     const API_ENDPOINT_GET_BOOKS1 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
 
@@ -18,7 +16,6 @@ export default function AcceptedBooks() {
             method: 'GET',
             url: API_ENDPOINT_GET_BOOKS1
         })
-        //console.log('Result: ', result2.data)
         setStatus1(result2.data)    
     }
 
