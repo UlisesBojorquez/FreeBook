@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     itemPaper:{
         padding:10
     }
-
 }));
 
 export default function Book(props) {
@@ -66,7 +65,6 @@ export default function Book(props) {
             
         }
         setCategories(textCategories)
-        
     }, []);
 
     const acceptBook = async() =>{
@@ -75,9 +73,7 @@ export default function Book(props) {
         const bodyStr={
             "status": 1
         }
-        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
-
+        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr)
     }
 
     const declineBook = () =>{
@@ -86,8 +82,8 @@ export default function Book(props) {
         const bodyStr={
             "status": 2
         }
-        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr).then(response => console.log(response))
-        
+        Axios.put(API_ENDPOINT_CHANGE_STATE_BOOK+"?id="+id, bodyStr)
+
     }
 
     const openDocument = () =>{

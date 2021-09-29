@@ -1,18 +1,15 @@
-import React, {useState, useEffect} from "react";
+import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { TextField, Button, makeStyles, Box, Tab, Tabs, Typography } from "@material-ui/core";
-import { useSnackbar } from 'notistack';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import Category from './Category.js';
-import ItemBoxBook from './ItemBoxBook.js';
 import UploadBook from './UploadBook.js';
 import PropTypes from 'prop-types';
 import Axios from 'axios'
-import ItemBoxBook0 from "./ItemBoxBook0.js";
-
+import ItemBoxBook from "./ItemBoxBook.js";
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -62,7 +59,10 @@ const useStyles = makeStyles((theme) => ({
         margin:0,
         color:'black',
         fontSize:'6vmin'
-    }
+    },
+    containerCategories:{
+        padding: 20,
+    },
 }));
 
 function TabPanel(props) {
@@ -101,35 +101,19 @@ function a11yProps(index) {
 export default function Home(props) {
     const classes = useStyles();
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
-
     const [search,setSearch] = useState('');
-    const [searchHelper,setSearchHelper] = useState('');
     const [flagSearch,setFlagSearch] = useState(true);
-
     const [value, setValue] = useState(0);
-
-    const [resultSearch,setResultSearch] = useState(false);
-
+    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category, 3 for no results
+    const [searchResponse, setSearchResponse] = useState([])
     const API_ENDPOINT_GET_BOOKS = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
     const API_ENDPOINT_GET_BOOKS_PER_CATEGORY = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?category='
-
-
-    /*const location = useLocation();
-    useEffect(() => {
-        if(location.state == null){
-            console.log('No hay usuario loggeado')
-        }else{
-            const myparam = location.state.params;
-            console.log(myparam);
-        }
-        
-    }, [location]);*/
+    const API_ENDPOINT_GET_BOOKS_SEARCH = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?search='
 
     const changeManager = (event) => {
         const currentValue=event.target.value;
         if(event.target.id==='search'){
-            const re=/^[a-zA-z0-9@_.]{0,50}$/;
+            const re=/^[a-zA-z0-9@_.\s]{0,50}$/;
             if (currentValue === '' || re.test(currentValue.trimStart()) ) {
                 setSearch(currentValue.trimStart());
                 setFlagSearch(true);
@@ -143,57 +127,68 @@ export default function Home(props) {
         })
     }
 
-    const moveRegister = () =>{
-        history.push({
-            pathname:'/Register'
-        })
-    }
-
-    const [searchMode, setSearchMode] = useState(0) //0 all, 1 search for a input, 2 search from a category
-    const [searchResponse, setSearchResponse] = useState([])
     const searchManager = async () => {
         if(search === ''){
-            setResultSearch(false);
             const result = await Axios({
                 method: 'GET',
                 url: API_ENDPOINT_GET_BOOKS
             })
-            console.log('Result: ', result.data)
             setSearchResponse(result.data)
             setSearchMode(0)
         }else{
-            setSearchMode(3)
+            const result = await Axios({
+                method: 'GET',
+                url: API_ENDPOINT_GET_BOOKS_SEARCH+search
+            })
+            if(result.data.length===0){
+                setSearchMode(4)
+            }else{
+                setSearchResponse(result.data)
+                setSearchMode(3)
+            } 
         }
-        
         setValue(1);
     }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const categoryManager = async (category) =>{
+        const result = await Axios({
+            method: 'GET',
+            url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY+category
+        })
+        setSearchResponse(result.data)
+        
+        if(result.data.length===0){
+            setSearchMode(4)
+        }else{
+            setSearchResponse(result.data)
+            setSearchMode(1)
+        }
+        setValue(1);
+    }
     
     function selectCategory(category){
-
-        /*const result = await Axios({
-            method: 'GET',
-            url: API_ENDPOINT_GET_BOOKS_PER_CATEGORY
-        })
-        console.log('Result: ', result.data)
-        setSearchResponse(result.data)*/
-        setValue(1);
-        setSearchMode(1)
-        console.log("esta es la cateogria seleccionada "+category)
+        categoryManager(category)
     }
 
     function selectSearchMode(){
         switch (searchMode) {
             case 0:
                 return searchResponse.map((book) =>(
-                    <ItemBoxBook0 title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
                 ))
             case 1:
-                return <ItemBoxBook title='hola' isbn='isbn' year='2001' editorial='editorial patitio' link='https://arxiv.org/pdf/1807.08957.pdf' categories='lista de categorias'/>
+                return searchResponse.map((book) =>(
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                ))
             case 3:
+                return searchResponse.map((book) =>(
+                    <ItemBoxBook title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} image={book.coverurl}/>
+                ))
+            case 4:
                 return <p>No se encuentran resultados</p>
         }
     }
@@ -229,10 +224,9 @@ export default function Home(props) {
                         /> 
                 </Grid>
                 <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveLogin}>Iniciar Sesión</Button> 
                 </Grid>
                 <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveRegister}>Registro</Button> 
+                   <Button className={classes.button} onClick={moveLogin}>Iniciar Sesión</Button> 
                 </Grid>
             </Grid>
             <Grid style={{marginTop:8}}>
@@ -245,15 +239,16 @@ export default function Home(props) {
                     <Category category={selectCategory}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    {
-                        selectSearchMode()
-                    }
+                    <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={4} className={classes.containerCategories}>
+                        {
+                            selectSearchMode()
+                        }
+                    </Grid>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <UploadBook/>
                 </TabPanel>
             </Grid>
-
         </Grid> 
     );
 }

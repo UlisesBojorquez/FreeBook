@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from "react";
-import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography, Paper } from "@material-ui/core";
-import { useSnackbar } from 'notistack';
+import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography } from "@material-ui/core";
 import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Book from './Book.js'
-import BookAD from './BookAD.js'
-import Axios from 'axios'
-
+import ReceivedBooks from './ReceivedBooks.js'
+import AcceptedBooks from './AcceptedBooks.js'
+import DeniedBooks from './DeniedBooks.js'
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -104,28 +102,19 @@ function a11yProps(index) {
     };
 }
 
-export default function Main(props) {
+export default function Main() {
     const classes = useStyles();
     const history = useHistory();
-    const { enqueueSnackbar } = useSnackbar();
-
     const [value, setValue] = useState(0);
-
-    const [status0, setStatus0] = useState([])
-    const [status1, setStatus1] = useState([])
-    const [status2, setStatus2] = useState([])
-    
-    const API_ENDPOINT_GET_BOOKS0 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=0'
-    const API_ENDPOINT_GET_BOOKS1 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
-    const API_ENDPOINT_GET_BOOKS2 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=2'
-
-
+    const [isLogged, setIsLogged] = useState(false)
+    const location = useLocation();
     useEffect(() => {
-        getBooks(0)
-        getBooks(1)
-        getBooks(2)
-        
-    }, []);
+        if(location.state == null){
+            window.location.replace('/')
+        }else{
+            setIsLogged(true)
+        }
+    }, [location]);
 
 
     const moveSalir = () =>{
@@ -138,89 +127,41 @@ export default function Main(props) {
         setValue(newValue);
     };
 
-    const getBooks = async (value) =>{
-        switch (value) {
-            case 0:
-                const result = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS0
-                })
-                //console.log('Result: ', result.data)
-                setStatus0(result.data)
-            case 1:
-                const result2 = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS1
-                })
-                //console.log('Result: ', result2.data)
-                setStatus1(result2.data)
-            case 2:
-                const result3 = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS2
-                })
-                //console.log('Result: ', result3.data)
-                setStatus2(result3.data)
-        }
-    }
-
-    function selectSearchMode0() {
-        
-        return status0.map((book) =>(
-            <Book title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>         
-        ))   
-    }
-    function selectSearchMode1() {
-        
-        return status1.map((book) =>(
-            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                 
-        ))   
-    }
-    function selectSearchMode2() {
-        
-        return status2.map((book) =>(
-            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                  
-        ))
-    }
-
-    
-
-
     return (
         <Grid>
-            <Grid container direction='row' justifyContent='flex-end' alignItems="center" spacing={2} className={classes.containerTopBar}>
-                <Grid item xs={8}>
-                    <h1 className={classes.textName}>FreeBook</h1> 
+            { 
+            isLogged ?
+            <Grid>
+                <Grid container direction='row' justifyContent='flex-end' alignItems="center" spacing={2} className={classes.containerTopBar}>
+                    <Grid item xs={8}>
+                        <h1 className={classes.textName}>FreeBook</h1> 
+                    </Grid>
+                    <Grid item xs={2}>
+                    </Grid>
+                    <Grid item xs={2}>
+                    <Button className={classes.button} onClick={moveSalir}>Salir</Button> 
+                    </Grid>
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
-                <Grid item xs={2}>
-                   <Button className={classes.button} onClick={moveSalir}>Salir</Button> 
-                </Grid>
-            </Grid>
-            <Grid style={{marginTop:8}}>
+                <Grid style={{marginTop:8}}>
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label="Llegada" {...a11yProps(0)} />
                     <Tab label="Aceptados" {...a11yProps(1)} />
                     <Tab label="Cancelados" {...a11yProps(2)} />
                 </Tabs>
                 <TabPanel value={value} index={0}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode0()} 
-                    </Grid>
+                    <ReceivedBooks/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode1()}
-                    </Grid>
+                    <AcceptedBooks/>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {selectSearchMode2()}
-                    </Grid>
+                    <DeniedBooks/>
                 </TabPanel>
             </Grid>
-
+            </Grid>
+            :
+            <Grid></Grid>
+            }
         </Grid> 
     );
 }

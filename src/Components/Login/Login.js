@@ -7,6 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { useSnackbar } from 'notistack';
 import { useHistory } from 'react-router-dom';
+import Axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
     containerForm:{
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
         width:300
     },
     title:{
-        marginBottom: 80
+        marginBottom: 180
     },
     button:{
         backgroundColor:'black',
@@ -59,6 +60,7 @@ export default function Login() {
     const [contraseñaHelper,setContraseñaHelper] = useState('');
     const [flagUsuario,setFlagUsuario] = useState(true);
     const [flagContraseña,setFlagContraseña] = useState(true);
+    const API_ENDPOINT_LOGIN = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/login'
 
     const changeManager = (event) => {
         const currentValue=event.target.value;
@@ -104,25 +106,26 @@ export default function Login() {
         return flag;
     }
 
-    const ingresar = () =>{
+    const ingresar = async () =>{
         if(validateInputs()){
-            enqueueSnackbar("Sucess", {variant: 'success'});
-            history.push({
-                pathname:'/Main'
+            const bodyStr={
+                "mail": usuario,
+                "password": contraseña 
+            }
+            Axios.post(API_ENDPOINT_LOGIN, bodyStr).then(response =>{
+                if(response.data===true){
+                    enqueueSnackbar("Ingreso correctamente", {variant: 'success'});
+                    history.push({
+                        pathname:'/Main',
+                        state:{params : true}
+                    })
+                }else{
+                    enqueueSnackbar("Usuario o constraseña incorrecta", {variant: 'error'});
+                }
             })
-            /*history.push({
-                pathname:'/Home',
-                state: { params: false },
-            });*/
         }else{
             enqueueSnackbar("Error", {variant: 'error'});
         }
-    }
-
-    const moveRegiser = () =>{
-        history.push({
-            pathname:'/Register'
-        })
     }
 
     const moveMenu = () =>{
@@ -131,7 +134,6 @@ export default function Login() {
         })
     }
 
-    
     return (
         <Grid >
             <Grid container direction="row" alignItems="flex-start" className={classes.containerForm}>
@@ -142,9 +144,6 @@ export default function Login() {
                     <Grid container direction="column" justifyContent="center" alignItems="center">
                         <Grid item className={classes.title}>
                             <h1>FreeBook</h1>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <h5><Link component="button" variant="body2" underline="hover" onClick={moveMenu} style={{color:'black'}}>Regresar al Menu</Link></h5>  
                         </Grid>
                         <Grid item xs={6}>
                             <TextField 
@@ -205,10 +204,7 @@ export default function Login() {
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
-                            
-                            <h5>¿No tienes una cuenta?</h5>  
-                            <h5><Link component="button" variant="body2" underline="hover" onClick={moveRegiser}>Crear cuenta</Link></h5>  
-
+                            <h5><Link component="button" variant="body2" underline="hover" onClick={moveMenu} style={{color:'black'}}>Regresar al Menu</Link></h5>   
                         </Grid>
                     </Grid>
                 </Grid>
