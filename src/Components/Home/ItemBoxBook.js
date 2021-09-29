@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize:'2.5vmin'
     }
 }));
+
 export default function ItemBoxBook(props) {
     const classes = useStyles()
 

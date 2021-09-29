@@ -3,8 +3,9 @@ import { Grid, Button, makeStyles, Box, Tab, Tabs, Typography, Paper } from "@ma
 import { useSnackbar } from 'notistack';
 import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Book from './Book.js'
-import BookAD from './BookAD.js'
+import ReceivedBooks from './ReceivedBooks.js'
+import AcceptedBooks from './AcceptedBooks.js'
+import DeniedBooks from './DeniedBooks.js'
 import Axios from 'axios'
 
 
@@ -111,19 +112,7 @@ export default function Main(props) {
 
     const [value, setValue] = useState(0);
 
-    const [status0, setStatus0] = useState([])
-    const [status1, setStatus1] = useState([])
-    const [status2, setStatus2] = useState([])
-    
-    const API_ENDPOINT_GET_BOOKS0 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=0'
-    const API_ENDPOINT_GET_BOOKS1 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book'
-    const API_ENDPOINT_GET_BOOKS2 = 'https://75bvpa6yfb.execute-api.us-east-1.amazonaws.com/book?status=2'
-
-
     useEffect(() => {
-        getBooks(0)
-        getBooks(1)
-        getBooks(2)
         
     }, []);
 
@@ -137,51 +126,6 @@ export default function Main(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    const getBooks = async (value) =>{
-        switch (value) {
-            case 0:
-                const result = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS0
-                })
-                //console.log('Result: ', result.data)
-                setStatus0(result.data)
-            case 1:
-                const result2 = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS1
-                })
-                //console.log('Result: ', result2.data)
-                setStatus1(result2.data)
-            case 2:
-                const result3 = await Axios({
-                    method: 'GET',
-                    url: API_ENDPOINT_GET_BOOKS2
-                })
-                //console.log('Result: ', result3.data)
-                setStatus2(result3.data)
-        }
-    }
-
-    function selectSearchMode0() {
-        
-        return status0.map((book) =>(
-            <Book title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>         
-        ))   
-    }
-    function selectSearchMode1() {
-        
-        return status1.map((book) =>(
-            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                 
-        ))   
-    }
-    function selectSearchMode2() {
-        
-        return status2.map((book) =>(
-            <BookAD title={book.title} isbn={book.isbn} year={book.year} editorial={book.editorial} link={book.url} categories={book.categories} authors={book.authors} categories={book.categories} id={book.id}/>                  
-        ))
-    }
 
 
 
@@ -204,25 +148,13 @@ export default function Main(props) {
                     <Tab label="Cancelados" {...a11yProps(2)} />
                 </Tabs>
                 <TabPanel value={value} index={0}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {
-                            selectSearchMode0()
-                        } 
-                    </Grid>
+                    <ReceivedBooks/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {
-                            selectSearchMode1()
-                        } 
-                    </Grid>
+                    <AcceptedBooks/>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    <Grid container direction='row' justifyContent='flex-start' alignItems="flex-start" spacing={2}>
-                        {
-                            selectSearchMode2()
-                        } 
-                    </Grid>
+                    <DeniedBooks/>
                 </TabPanel>
             </Grid>
 

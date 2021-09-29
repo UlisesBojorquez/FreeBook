@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     itemPaper:{
         padding:10
     }
-
 }));
 
 export default function Book(props) {
@@ -66,9 +65,6 @@ export default function Book(props) {
             
         }
         setCategories(textCategories)
-
-        
-        
     }, []);
 
     const acceptBook = async() =>{

@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import { Grid, makeStyles, Paper, Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-    
     title:{
         margin:0,
         textAlign:'left'
@@ -14,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
     itemPaper:{
         padding:10
     }
-
 }));
 
 export default function BookAD(props) {
